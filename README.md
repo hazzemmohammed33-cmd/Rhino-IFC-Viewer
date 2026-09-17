@@ -1,94 +1,44 @@
 # Rhino IFC Viewer
 
-A Rhino 8 plug-in that exports the active 3D model to IFC4 and displays it inside an owned, modeless preview window using the That Open Company (formerly IFC.js) 3D viewer.
+A Rhino 8 add-in that exports the active model to IFC and displays it inside Rhino using the That Open Company viewer.
 
-## 1. Purpose and Tested Platform
+## Implementation
 
-- **Purpose:** Fast, offline, geometry-accurate IFC4 snapshot preview directly inside Rhino.
-- **Tested Environment:** Rhino 8 Evaluation (v8.29.26063.11001) on Windows 11 x64.
-- **Runtimes:** .NET 8 (Windows Desktop runtime 8.0.25) and Microsoft Edge WebView2 Runtime.
-- **Output:** Packaged standalone distribution in `dist/RhinoIfcViewer/`.
+- **C# / .NET 8 and RhinoCommon:** Capture supported geometry from the active document without modifying it.
+- **xBIM Essentials:** Write a geometry-focused IFC4 file using triangulated `IfcBuildingElementProxy` objects, with coordinates in metres.
+- **WinForms and WebView2:** Host a simple modeless window inside Rhino.
+- **TypeScript, That Open Components, Fragments and web-ifc:** Load the exported IFC into the embedded 3D viewer. Viewer assets are bundled locally; no server or API key is needed.
 
-## 2. Run the Built Plug-in
+Geometry capture runs on Rhino's UI thread; IFC writing and viewer loading run asynchronously. Each refresh displays a new snapshot of the model.
 
-1. Keep the complete `dist/RhinoIfcViewer/` folder together (do not separate DLLs, `viewer/`, or native assets).
-2. Launch Rhino 8 in .NET 8 mode (verify via `SystemInfo` if needed).
-3. In Rhino, run the `PlugInManager` command, click **Install**, and select `RhinoIfcViewer.rhp` from the release folder.
-4. Open any Rhino model and run the command:
-   ```text
-   OptiIfcViewer
-   ```
-   *(Do not copy dependencies into Rhino's program files directory; the plug-in resolves dependencies from its own folder).*
+## Requirements
 
-## 3. Usage and Snapshot Semantics
+- Windows x64, licensed Rhino 8 running .NET 8, and Microsoft Edge WebView2 Runtime.
+- To build: .NET SDK 10.0.400, Node.js 24 and npm 11. Package restore requires internet access; the packaged viewer runs offline.
 
-- **Initial Export:** When `OptiIfcViewer` opens for the first time, it automatically captures the active model, exports an IFC4 file, and displays the 3D preview.
-- **Manual Refresh:** Editing the Rhino model does *not* trigger automatic re-exports. Click **Export & Refresh** to capture and display current geometry.
-- **Truthful Exclusions:** Unsupported types (such as curves, text, or block instances) are safely skipped and reported in the status bar (e.g. `Objects: 4 exported · 1 skipped`).
-- **Failure Recovery:** If an export fails, an available previous scene is preserved as **stale** with matching metadata. If that scene no longer exists, the viewer shows an error and retains eligible valid export-file metadata.
-- **Selectable Path:** The read-only path box displays the full `.ifc` path on disk and supports keyboard/mouse selection for inspection in external BIM software.
+## Build from source
 
-## 4. Rebuild from Source
-
-### Prerequisites
-- .NET SDK 10.0.400 (or an allowed patch under global.json)
-- Node.js 24 and npm 11
-- Windows PowerShell
-
-### Exact Build and Packaging Command
-From the repository root, run:
+From the source root, run:
 
 ```powershell
 powershell.exe -NoProfile -File .\scripts\package.ps1
 ```
 
-This automated script:
-1. Restores npm dependencies with `npm ci` and builds the production web bundle with Vite.
-2. Restores NuGet packages using `--locked-mode` to ensure reproducible binaries.
-3. Builds `RhinoIfcViewer.csproj` in `Release` configuration with warnings as errors.
-4. Executes the full C# unit test suite (29 tests) and Node test suite (18 tests).
-5. Stages the self-contained output into `dist/RhinoIfcViewer/` and writes `manifest.sha256`.
+The script restores locked dependencies, builds the plug-in and viewer, runs automated tests, and creates `dist/RhinoIfcViewer/`.
 
-## 5. Architecture
+## Run
 
-```text
-Rhino Document (UI Thread)
-       │
-       ▼ (Capture target <= 2000 ms on the small fixture)
-ModelSnapshot (Detached immutable geometry in metres)
-       │
-       ▼ (Async background task)
-IfcExporter (xBIM Essentials) ──► Valid IFC4 file on disk
-       │
-       ▼ (Local virtual host https://rhino-ifc.local/)
-WebView2 Form ──► That Open Components + WebAssembly (web-ifc.wasm)
-```
+A prebuilt package ready for direct testing is available on the [GitHub Releases page (v0.1.0)](https://github.com/hazzemmohammed33-cmd/Rhino-IFC-Viewer/releases/tag/v0.1.0).
 
-- **Zero Cloud / Zero CDN:** All web scripts, workers, WASM files, and IFC models are loaded strictly from the local filesystem via WebView2 custom virtual hostname mappings.
-- **No API Keys or Servers:** Completely offline execution.
+1. Keep the complete `dist/RhinoIfcViewer/` folder together, including its DLLs and `viewer` folder.
+2. In Rhino, run `PlugInManager`, choose **Install**, and select `RhinoIfcViewer.rhp` from that folder.
+3. Open a model and run `OptiIfcViewer`. The window exports the active model and displays the IFC automatically.
+4. Edit the Rhino model, then click **Export & Refresh** to update the preview. The UI shows the exported file path and exported/skipped counts.
 
-## 6. Geometry Scope and Limitations
+## Scope and errors
 
-- **Supported Geometry:** Breps, Surfaces, Extrusions, and Meshes (including hidden and locked objects).
-- **Unsupported Types:** Curves, point clouds, text, annotations, block instances, SubD, and clipping planes are skipped and truthfully reported in export counts.
-- **Units:** Coordinates are normalized to metres in the IFC4 output, preserving world coordinate placements and offsets.
-- **BIM Classification:** Elements are exported as generic `IfcBuildingElementProxy` objects with tessellated faceted geometry; semantic BIM classification and property editing are out of scope.
+Supports Breps, surfaces, extrusions and meshes, including hidden and locked objects. Unsupported types, including curves and block instances, are skipped and reported. Curved geometry is meshed; elements use generic IFC types without semantic BIM classification. Updates are manual.
 
-## 7. Troubleshooting
+If a supported object cannot be converted, the entire new export fails with object details. An available previous preview is marked stale. Viewer errors retain the valid export path and allow retry. Switching documents clears the previous preview and requires manual refresh.
 
-- **Plug-in does not load:** Ensure Rhino 8 is configured to use the .NET 8 runtime (run `SetDotNetRuntime` if required).
-- **Missing WebView2:** Ensure the Microsoft Edge WebView2 Runtime is installed.
-- **Viewer Error / Failed to Fetch:** Ensure the complete `dist/RhinoIfcViewer/` folder was copied intact, including `viewer/vendor/web-ifc/web-ifc.wasm` and `viewer/vendor/fragments/worker.mjs`.
-
-## 8. Verification and Acceptance Matrix
-
-Implementation and recorded checks are summarized in [docs/VERIFICATION.md](docs/VERIFICATION.md). Recorded host assertions cover rendering, geometry, refresh, selected lifecycle and recovery scenarios. They do not establish a complete final acceptance sweep: actual 60-second timeout, network-disabled operation, comprehensive DPI/resource checks and a fresh installation require separate evidence.
-
-## 9. Dependencies and Notices
-
-- **xBIM Essentials:** CDDL-1.0 (Open-source IFC geometry and STEP engine).
-- **That Open Components / Fragments / Three.js:** MIT License (Local 3D web viewer).
-- **web-ifc:** MPL-2.0 (Local WebAssembly IFC parser).
-- **Microsoft.Web.WebView2:** Microsoft SDK terms (redistributable native and managed wrappers).
-
-Full dependency inventory and licenses are located in [`docs/DEPENDENCIES.md`](docs/DEPENDENCIES.md), [`THIRD-PARTY-NOTICES.txt`](THIRD-PARTY-NOTICES.txt), and the [`licenses/`](licenses/) directory.
+If the window or model fails to load, check Rhino's .NET runtime, WebView2 installation and that the complete release folder is present. For full technical details see [README.DETAILED.md](README.DETAILED.md), for recorded checks see [docs/VERIFICATION.md](docs/VERIFICATION.md), and see `THIRD-PARTY-NOTICES.txt` for dependency notices.

@@ -41,4 +41,4 @@ Supports Breps, surfaces, extrusions and meshes, including hidden and locked obj
 
 If a supported object cannot be converted, the entire new export fails with object details. An available previous preview is marked stale. Viewer errors retain the valid export path and allow retry. Switching documents clears the previous preview and requires manual refresh.
 
-If the window or model fails to load, check Rhino's .NET runtime, WebView2 installation and that the complete release folder is present. See `docs/VERIFICATION.md` for recorded checks and `THIRD-PARTY-NOTICES.txt` for dependency notices.
+If the window or model fails to load, check Rhino's .NET runtime, WebView2 installation and that the complete release folder is present. For full technical details see [README.DETAILED.md](README.DETAILED.md), for recorded checks see [docs/VERIFICATION.md](docs/VERIFICATION.md), and see `THIRD-PARTY-NOTICES.txt` for dependency notices.
