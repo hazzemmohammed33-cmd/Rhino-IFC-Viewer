@@ -28,6 +28,8 @@ The script restores locked dependencies, builds the plug-in and viewer, runs aut
 
 ## Run
 
+A prebuilt package ready for direct testing is available on the [GitHub Releases page (v0.1.0)](https://github.com/hazzemmohammed33-cmd/Rhino-IFC-Viewer/releases/tag/v0.1.0).
+
 1. Keep the complete `dist/RhinoIfcViewer/` folder together, including its DLLs and `viewer` folder.
 2. In Rhino, run `PlugInManager`, choose **Install**, and select `RhinoIfcViewer.rhp` from that folder.
 3. Open a model and run `OptiIfcViewer`. The window exports the active model and displays the IFC automatically.
