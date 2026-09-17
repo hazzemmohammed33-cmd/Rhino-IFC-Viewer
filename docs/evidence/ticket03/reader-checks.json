@@ -1,0 +1,107 @@
+{
+  "ticket": "Ticket 03", 
+  "timestamp": "2026-09-16 16:46:51", 
+  "assertions": [
+    {
+      "detail": "1 ms", 
+      "pass": true, 
+      "description": "Capture pause on metres fixture under 2 seconds"
+    }, 
+    {
+      "detail": "4 objects", 
+      "pass": true, 
+      "description": "Exported objects count is 4"
+    }, 
+    {
+      "detail": "1 exclusions", 
+      "pass": true, 
+      "description": "Exclusions count is 1"
+    }, 
+    {
+      "detail": "Unsupported Curve 'Unsupported_Curve' (25260318-94a7-4b04-90af-d416bc02e00b)", 
+      "pass": true, 
+      "description": "Unsupported curve identified in exclusions"
+    }, 
+    {
+      "detail": "", 
+      "pass": true, 
+      "description": "All 4 expected object names present"
+    }, 
+    {
+      "detail": "", 
+      "pass": true, 
+      "description": "Box_1m is closed"
+    }, 
+    {
+      "detail": "", 
+      "pass": true, 
+      "description": "Box_1m coordinate bounds are [0, 1] metres"
+    }, 
+    {
+      "detail": "", 
+      "pass": true, 
+      "description": "Extrusion_2m spans Z from 0 to 2 metres"
+    }, 
+    {
+      "detail": "", 
+      "pass": true, 
+      "description": "Open_Surface is open (IsClosed == False)"
+    }, 
+    {
+      "detail": "", 
+      "pass": true, 
+      "description": "Offset_Mesh spans X=5..6 metres"
+    }, 
+    {
+      "detail": "", 
+      "pass": true, 
+      "description": "Offset_Mesh at Z=0.5 metres"
+    }, 
+    {
+      "detail": "2 triangles", 
+      "pass": true, 
+      "description": "Offset_Mesh has 2 triangles from quad"
+    }, 
+    {
+      "detail": "", 
+      "pass": true, 
+      "description": "Document dirty flag unchanged after read"
+    }, 
+    {
+      "detail": "", 
+      "pass": true, 
+      "description": "Object count unchanged"
+    }, 
+    {
+      "detail": "", 
+      "pass": true, 
+      "description": "Selection unchanged"
+    }, 
+    {
+      "detail": "1 ms", 
+      "pass": true, 
+      "description": "Capture pause on mm fixture under 2 seconds"
+    }, 
+    {
+      "detail": "", 
+      "pass": true, 
+      "description": "Millimetres fixture exported objects count is 4"
+    }, 
+    {
+      "detail": "", 
+      "pass": true, 
+      "description": "Millimetres fixture exclusions count is 1"
+    }, 
+    {
+      "detail": "", 
+      "pass": true, 
+      "description": "Box in mm file scaled to metres [0, 1], not 1000"
+    }, 
+    {
+      "detail": "", 
+      "pass": true, 
+      "description": "Offset_Mesh in mm file scaled to metres [5, 6], not 5000"
+    }
+  ], 
+  "overall": "PASS"
+}

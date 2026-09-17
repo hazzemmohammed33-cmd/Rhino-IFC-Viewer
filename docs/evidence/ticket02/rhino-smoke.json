@@ -1,0 +1,9 @@
+{
+  "result": "PASS", 
+  "webview2InFormALC": "1.0.4191.47", 
+  "formALC": "RhinoIfcViewer.WebView2", 
+  "url": "https://rhino-ifc.local/index.html?revision=168ab2bd8f53401b812ccbce320ac0f8&model=models%2Fmodel-168ab2bd8f53401b812ccbce320ac0f8.ifc", 
+  "status": "Temporary IFC loaded - not a Rhino export.", 
+  "rhinoWebView2": "1.0.1938.49", 
+  "taskFaulted": false
+}

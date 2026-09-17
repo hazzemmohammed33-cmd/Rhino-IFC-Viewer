@@ -1,0 +1,65 @@
+﻿{
+  "assembly_mvid": "89313df3-e82d-43df-833c-0fa67b0f48fe", 
+  "assembly_path": "D:\\Rhino-IFC-Viewer\\src\\RhinoIfcViewer\\bin\\Release\\net8.0-windows\\RhinoIfcViewer.rhp", 
+  "assertions": [
+    {
+      "detail": "btnEnabled=False, btnText='Working...', cursor=[Cursor: WaitCursor], statusColor=#2563EB", 
+      "description": "1. Busy state presentation: button disabled, 'Working...', wait cursor, #2563EB status", 
+      "pass": true
+    }, 
+    {
+      "detail": "caption='Rhino IFC Viewer', minSize={Width=680, Height=500}, autoScale=Dpi, taskbar=False", 
+      "description": "2. Window properties: caption, min size (680x500), Dpi scaling, ShowInTaskbar=False", 
+      "pass": true
+    }, 
+    {
+      "detail": "font='Segoe UI', bg=#F5F6F8, fg=#202124, btnBg=#2563EB", 
+      "description": "3. Typography & color palette: Segoe UI, bg=#F5F6F8, fg=#202124, btn=#2563EB", 
+      "pass": true
+    }, 
+    {
+      "detail": "text='Export & Refresh', useMnemonic=False, minSize={Width=160, Height=38}, radius=8", 
+      "description": "4. Action button specification: 'Export & Refresh', >=160x38, UseMnemonic=False, Radius=8", 
+      "pass": true
+    }, 
+    {
+      "detail": "tabIndices=(btn:0, browser:1, path:2), coreAccessibleNamesPresent=True", 
+      "description": "5. Tab order & accessibility: Button(0)->Browser(1)->Path(2), core AccessibleNames present", 
+      "pass": true
+    }, 
+    {
+      "detail": "autoEllipsis=True, labelText='Source: ui-assessment-1789635988.3dm', tooltip='ui-assessment-1789635988.3dm'", 
+      "description": "6. Source label & tooltip: AutoEllipsis=True, doc name displayed and present in tooltip", 
+      "pass": true
+    }, 
+    {
+      "detail": "scene=True, browserVis=True, msgHidden=True, summary='Objects: 4 exported [U+00B7] 1 skipped', statusColor=#8A5A00, pathExists=True, staleHidden=True", 
+      "description": "7. Loaded real IFC scene state: browser visible, message hidden, valid status color, summary visible, valid .ifc path", 
+      "pass": true
+    }, 
+    {
+      "detail": "readOnly=True, pathLength=105, border=FixedSingle", 
+      "description": "8. Selectable long path: ReadOnly=True, BorderStyle=FixedSingle, full path contained", 
+      "pass": true
+    }, 
+    {
+      "detail": "sceneRetained=True, staleVis=True, staleText='Previous snapshot (stale)', staleColor=#8A5A00, statusColor=#B42318, pathRetained=True", 
+      "description": "9. Stale state presentation: surviving browser scene retained, orange stale badge visible, red status", 
+      "pass": true
+    }, 
+    {
+      "detail": "sceneCleared=True, browserHidden=True, msgVis=True, title='Document changed', pathCleared=True, summaryCleared=True, source='Source: ui-empty-1789635988.3dm'", 
+      "description": "10. Document switch idle state: message visible ('No preview loaded'), browser hidden, path cleared, summary cleared", 
+      "pass": true
+    }, 
+    {
+      "detail": "emptyOk=True, title='Empty document', size={Width=680, Height=500} (min 680x500), btnSize={Width=182, Height=47}, statusMaxW=624", 
+      "description": "11. Empty state & minimum size enforcement: 'No exportable objects', Size>=680x500 enforced, button unclipped, labels constrained", 
+      "pass": true
+    }
+  ], 
+  "finished": "2026-09-17 12:06:39", 
+  "overall": "PASS", 
+  "assembly_sha256": "83d52d5c1ed3ac91db76bfe72487f172c50b2d364992cf2c3b72337a72d91fd7", 
+  "started": "2026-09-17 12:06:28"
+}

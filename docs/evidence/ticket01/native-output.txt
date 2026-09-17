@@ -1,0 +1,1 @@
+﻿PASS: required native output present; plugin and root loader x64; loader matches pinned source; no RhinoCommon or WPF wrapper.

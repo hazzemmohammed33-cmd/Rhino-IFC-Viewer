@@ -1,0 +1,45 @@
+﻿{
+  "assembly_path": "D:\\Rhino-IFC-Viewer\\src\\RhinoIfcViewer\\bin\\Release\\net8.0-windows\\RhinoIfcViewer.rhp", 
+  "assertions": [
+    {
+      "detail": "Objects: 4 exported [U+00B7] 1 skipped", 
+      "pass": true, 
+      "description": "1. Baseline load: 4 exported, 1 skipped, scene available"
+    }, 
+    {
+      "detail": "Viewer error: Failed to fetch | path=C:\\Users\\Hazem\\AppData\\Local\\OptiDesign\\RhinoIfcViewer\\exports\\model-0a3fda23222a4a06a2f678ddf0104f2c.ifc", 
+      "pass": true, 
+      "description": "2. Missing WASM triggers viewer error, scene unavailable, valid IFC retained"
+    }, 
+    {
+      "detail": "Loaded with exclusions", 
+      "pass": true, 
+      "description": "3. Recovery after WASM restoration loads model cleanly"
+    }, 
+    {
+      "detail": "WebView2 process failed: RenderProcessExited", 
+      "pass": true, 
+      "description": "4. Renderer crash marks browserNeedsReset, clears scene, retains valid IFC"
+    }, 
+    {
+      "detail": "newControl=True, oldDisposed=True, loaded=True", 
+      "pass": true, 
+      "description": "5. Crash recovery disposes old browser, recreates WebView2, renders cleanly"
+    }, 
+    {
+      "detail": "unknown=False, badRev=False, emptyErr=False, valid=True, late=False", 
+      "pass": true, 
+      "description": "6. Protocol rejects unknown types, bad revisions, empty errors, and late messages"
+    }, 
+    {
+      "detail": "scene cleared on switch", 
+      "pass": true, 
+      "description": "7. Document switch permanently clears displayed scene and metadata"
+    }
+  ], 
+  "started": "2026-09-17 11:43:31", 
+  "assembly_sha256": "c3e2c668051d0bd6bf37421ee376e3aa8cb0e05b31a5464447908e70a06e3465", 
+  "overall": "PASS", 
+  "assembly_mvid": "25cd6187-4fa9-41a4-b625-e58775a46a4c", 
+  "finished": "2026-09-17 11:43:48"
+}

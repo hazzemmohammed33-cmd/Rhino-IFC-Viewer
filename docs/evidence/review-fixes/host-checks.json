@@ -1,0 +1,75 @@
+﻿{
+  "assembly_mvid": "74626297-ff51-4688-8d21-e197f67ee05e", 
+  "finished": "2026-09-17 01:56:27", 
+  "assertions": [
+    {
+      "description": "Real embedded IFC initial load", 
+      "pass": true, 
+      "detail": "Objects: 4 exported [U+00B7] 1 skipped"
+    }, 
+    {
+      "description": "Repeated command keeps one form and snapshot", 
+      "pass": true, 
+      "detail": ""
+    }, 
+    {
+      "description": "Full small-fixture capture <= 2000 ms", 
+      "pass": true, 
+      "detail": "9"
+    }, 
+    {
+      "description": "Full geometry fixture 4/1", 
+      "pass": true, 
+      "detail": ""
+    }, 
+    {
+      "description": "Copy failure preserves existing scene and its metadata as stale", 
+      "pass": true, 
+      "detail": "Export failed: Viewer file staging failed: Could not find a part of the path 'C:\\Users\\Hazem\\AppData\\Local\\OptiDesign\\RhinoIfcViewer\\sessions\\94a2fa66ce21452d9ae7c196093f1cb3\\site\\models\\model-72b2767f422e41f29bd6645fc9a00874.ifc'."
+    }, 
+    {
+      "description": "Copy failure identifies staging cause", 
+      "pass": true, 
+      "detail": ""
+    }, 
+    {
+      "description": "Retry after staging repair loads new snapshot", 
+      "pass": true, 
+      "detail": ""
+    }, 
+    {
+      "description": "Renderer crash clears scene eligibility but retains valid IFC", 
+      "pass": true, 
+      "detail": "WebView2 process failed: RenderProcessExited"
+    }, 
+    {
+      "description": "Retry recreates browser and renders IFC", 
+      "pass": true, 
+      "detail": "Loaded with exclusions"
+    }, 
+    {
+      "description": "Same-document edits do not auto-refresh", 
+      "pass": true, 
+      "detail": ""
+    }, 
+    {
+      "description": "Manual refresh includes added box", 
+      "pass": true, 
+      "detail": "Objects: 5 exported [U+00B7] 1 skipped"
+    }, 
+    {
+      "description": "Empty refresh clears scene/path and reports zero", 
+      "pass": true, 
+      "detail": "Objects: 0 exported [U+00B7] 0 skipped"
+    }, 
+    {
+      "description": "Unitless unsupported curve/light count is 0/2", 
+      "pass": true, 
+      "detail": "Objects: 0 exported [U+00B7] 2 skipped"
+    }
+  ], 
+  "overall": "PASS", 
+  "started": "2026-09-17 01:56:02", 
+  "assembly_path": "D:\\Rhino-IFC-Viewer\\src\\RhinoIfcViewer\\bin\\Release\\net8.0-windows\\RhinoIfcViewer.rhp", 
+  "assembly_sha256": "1b833024a079da621b3897a177840e2e9026d72523e66dbece73ad5f758f4acf"
+}

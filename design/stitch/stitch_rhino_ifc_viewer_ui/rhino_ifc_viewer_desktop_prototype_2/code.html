@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-900 select-none">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rhino IFC Viewer - Desktop Window Prototype</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            segoe: ['"Segoe UI"', '-apple-system', 'BlinkMacSystemFont', 'Roboto', 'sans-serif'],
+            mono: ['"Cascadia Mono"', '"Consolas"', '"Courier New"', 'monospace']
+          },
+          colors: {
+            winBg: '#F5F6F8',
+            winSurface: '#FFFFFF',
+            winText: '#202124',
+            winTextSec: '#616975',
+            winBorder: '#DDE1E6',
+            winBorderDark: '#C1C7D0',
+            winPrimary: '#2563EB',
+            winPrimaryHover: '#1D4ED8',
+            winPrimaryActive: '#1E40AF',
+            winSuccess: '#237A45',
+            winWarning: '#8A5A00',
+            winWarningBg: '#FEF3C7',
+            winError: '#B42318',
+            winErrorBg: '#FEE2E2',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* WinForms Native Control Emulation */
+    body {
+      font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Standard Win11 / WinForms Button Styling */
+    .win-btn {
+      font-family: "Segoe UI", sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+      transition: background-color 0.1s, border-color 0.1s, opacity 0.1s;
+    }
+    .win-btn:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+    .win-btn:focus-visible {
+      outline: 2px solid #2563EB;
+      outline-offset: 1px;
+    }
+
+    /* Windows Title Bar Controls Hover */
+    .win-control-btn {
+      transition: background-color 0.15s;
+    }
+    .win-control-btn:hover {
+      background-color: #E2E6EC;
+    }
+    .win-control-close:hover {
+      background-color: #E81123 !important;
+      color: white !important;
+    }
+
+    /* Interactive 3D Mockup Canvas */
+    .grid-lines {
+      background-size: 24px 24px;
+      background-image: 
+        linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    }
+
+    /* Scrollbar WinForms style */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F1F3F5;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #C4C8D0;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #A0A5AE;
+    }
+  </style>
+</head>
+<body class="h-full bg-slate-900 text-slate-100 flex flex-col items-center justify-center p-3 sm:p-6 overflow-x-auto">
+
+  <!-- TOP TOOLBAR: ARCHITECTURAL STATE CONTROLS FOR TESTING & SPEC VERIFICATION -->
+  <div class="w-full max-w-[960px] mb-3 flex flex-wrap items-center justify-between gap-2 px-2 text-xs font-segoe">
+    <div class="flex items-center gap-2">
+      <span class="inline-flex items-center px-2 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-emerald-400 text-[11px]">
+        Rhino 8 Modeless Plug-in Mockup
+      </span>
+      <span class="text-slate-400 hidden sm:inline">WinForms (.NET 8) · WebView2 Architecture</span>
+    </div>
+
+    <!-- State Switcher Dropdown (Allows testing all 10 required spec states) -->
+    <div class="flex items-center gap-2 bg-slate-800 border border-slate-700 rounded px-2 py-1">
+      <label for="stateSelector" class="text-slate-300 font-medium">Simulate Plug-in State:</label>
+      <select id="stateSelector" onchange="setPluginState(this.value)" class="bg-slate-900 text-amber-300 border border-slate-600 rounded px-2 py-0.5 text-xs focus:outline-none focus:border-blue-500 font-mono">
+        <option value="success" selected>1. Success (Loaded)</option>
+        <option value="partial">2. Partial Export (Exclusions)</option>
+        <option value="empty">3. Empty Model (No Geometry)</option>
+        <option value="init">4. Initializing</option>
+        <option value="ready">5. Ready to Export</option>
+        <option value="reading">6. Reading Rhino Model...</option>
+        <option value="exporting">7. Exporting IFC...</option>
+        <option value="loading">8. Loading IFC Preview...</option>
+        <option value="export_fail">9. Export Failure (Stale)</option>
+        <option value="viewer_fail">10. Viewer Failure</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- WINDOW CONTAINER (Rhino 8 Owned Modeless Window) -->
+  <!-- Target logical size: 960 x 700 px, Min size: 680 x 500 px -->
+  <div id="rhinoWindowFrame" class="w-full max-w-[960px] h-[720px] min-w-[680px] min-h-[500px] bg-winBg border border-slate-400/50 rounded-lg shadow-2xl flex flex-col text-winText overflow-hidden relative select-text">
+
+    <!-- 1. WINDOW TITLE BAR (Standard Windows 11 / Rhino Form Frame) -->
+    <div class="h-9 bg-[#EBECEF] border-b border-winBorder flex items-center justify-between px-3 select-none flex-shrink-0">
+      <!-- Title & Icon -->
+      <div class="flex items-center gap-2 min-w-0">
+        <!-- Rhino Plug-in Icon -->
+        <svg class="w-4 h-4 text-winText flex-shrink-0" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1.5" y="1.5" width="13" height="13" rx="1.5" stroke="#4A5568" stroke-width="1.2"/>
+          <path d="M4 11.5L8 3.5L12 11.5" stroke="#2563EB" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M5.5 8.5H10.5" stroke="#2563EB" stroke-width="1.2"/>
+        </svg>
+        <span class="text-xs font-semibold text-slate-800 tracking-tight truncate">Rhino IFC Viewer</span>
+        <span class="text-[10px] text-slate-500 font-normal hidden md:inline-block px-1.5 py-0.2 bg-slate-200/60 rounded border border-slate-300">Rhino 8 Window</span>
+      </div>
+
+      <!-- Native Windows Caption Controls -->
+      <div class="flex items-center -mr-3 h-full">
+        <button type="button" aria-label="Minimize" class="win-control-btn w-11 h-full flex items-center justify-center text-slate-600 focus:outline-none">
+          <svg class="w-2.5 h-2.5" viewBox="0 0 10 1" fill="currentColor">
+            <rect width="10" height="1"/>
+          </svg>
+        </button>
+        <button type="button" aria-label="Maximize" class="win-control-btn w-11 h-full flex items-center justify-center text-slate-600 focus:outline-none">
+          <svg class="w-2.5 h-2.5" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1">
+            <rect x="0.5" y="0.5" width="9" height="9"/>
+          </svg>
+        </button>
+        <button type="button" aria-label="Close" class="win-control-btn win-control-close w-11 h-full flex items-center justify-center text-slate-600 hover:text-white focus:outline-none">
+          <svg class="w-2.5 h-2.5" viewBox="0 0 10 10" fill="currentColor">
+            <path d="M0.85 0.15L5 4.3L9.15 0.15L9.85 0.85L5.7 5L9.85 9.15L9.15 9.85L5 5.7L0.85 9.85L0.15 9.15L4.3 5L0.15 0.85L0.85 0.15Z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 2. COMPACT HEADER (Export & Refresh, Window Purpose) -->
+    <!-- Specs: 16px outer padding, Button approx 160 x 38 logical px -->
+    <header class="bg-winSurface border-b border-winBorder px-4 py-3 flex items-center justify-between gap-4 flex-shrink-0">
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center gap-2">
+          <h1 class="text-base font-semibold text-winText tracking-tight leading-snug">IFC Preview</h1>
+          <!-- Stale snapshot warning badge (conditionally shown) -->
+          <span id="staleBadge" class="hidden text-[11px] font-medium text-amber-800 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded">
+            Previous snapshot — refresh failed
+          </span>
+        </div>
+        <p class="text-xs text-winTextSec mt-0.5 truncate">
+          Review the exported snapshot of your Rhino model.
+        </p>
+      </div>
+
+      <!-- Primary Action Button: RefreshRequested event target -->
+      <!-- Label stays verbatim "Export & Refresh" while busy, disabled state handled cleanly -->
+      <button 
+        id="btnExportRefresh" 
+        onclick="triggerUserExport()"
+        class="win-btn flex-shrink-0 w-[160px] h-[38px] bg-winPrimary text-white rounded flex items-center justify-center gap-2 hover:bg-winPrimaryHover active:bg-winPrimaryActive disabled:bg-slate-200 disabled:text-slate-400 disabled:border-slate-300 disabled:shadow-none disabled:cursor-not-allowed border border-blue-700/20">
+        <!-- Spinner only shown when SetBusy is true -->
+        <svg id="btnSpinner" class="hidden w-4 h-4 animate-spin text-white/90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+          <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"></path>
+        </svg>
+        <span id="btnLabel" class="truncate">Export & Refresh</span>
+      </button>
+    </header>
+
+    <!-- 3. SOURCE DOCUMENT ROW (SetSourceDocument) -->
+    <!-- Specs: Unsaved -> "Untitled", truncation with tooltip, snapshot clarification -->
+    <div class="bg-slate-50 border-b border-winBorder px-4 py-1.5 flex items-center justify-between text-xs text-winTextSec flex-shrink-0">
+      <div class="flex items-center gap-2 min-w-0 pr-2">
+        <span class="font-medium text-slate-700 flex-shrink-0">Source:</span>
+        <span 
+          id="sourceDocName" 
+          title="C:\Users\Architect\Documents\Projects\2025-Rhino-BIM\Assessment Model.3dm" 
+          class="font-mono text-winText text-[12.5px] truncate cursor-help hover:text-blue-700 hover:underline">
+          Assessment Model.3dm
+        </span>
+      </div>
+      <div class="flex items-center gap-1.5 text-[11px] text-slate-500 flex-shrink-0 pl-2 border-l border-slate-200">
+        <svg class="w-3 h-3 text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 16 16" stroke="currentColor" stroke-width="1.5">
+          <circle cx="8" cy="8" r="6.5"/>
+          <path d="M8 5v3.5l2 1.5"/>
+        </svg>
+        <span class="italic">Exported snapshot (not live-synced)</span>
+      </div>
+    </div>
+
+    <!-- 4. EXPANDING PREVIEW REGION: Embedded WebView2 (ViewerBrowser) -->
+    <!-- Specs: Neutral background, That Open Company viewer mock, no native toolbars -->
+    <main id="viewerContainer" class="flex-1 bg-[#EBEEF2] relative border-b border-winBorder overflow-hidden flex flex-col justify-center items-center">
+
+      <!-- That Open Company Engine Mock (Active 3D Canvas Representation) -->
+      <div id="viewerCanvasLayer" class="absolute inset-0 w-full h-full flex flex-col items-center justify-center grid-lines">
+        
+        <!-- Embedded Viewer Brand/Context Tag (Represents That Open Company Component inside WebView2) -->
+        <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm border border-slate-300 rounded px-2.5 py-1 text-[11px] font-mono text-slate-600 shadow-sm flex items-center gap-2 z-10 pointer-events-none">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>That Open Company · 3D Viewer</span>
+          <span class="text-slate-400">|</span>
+          <span class="text-slate-500">WebView2 Host</span>
+        </div>
+
+        <!-- In-Viewer Help Overlay (Indicating navigation handled inside browser) -->
+        <div class="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm border border-slate-300 rounded px-2 py-1 text-[10.5px] text-slate-500 shadow-sm pointer-events-none">
+          Rotate: Left Drag · Pan: Right Drag · Zoom: Scroll
+        </div>
+
+        <!-- Replaceable Illustrative Building Model Mockup (Slab & Concrete Columns) -->
+        <!-- User Spec: "for visual mockup only, a simple illustrative building model such as a slab and several columns. Keep this illustration replaceable; the real application will display actual exported IFC geometry" -->
+        <div id="illustrativeModel" class="relative w-[480px] h-[320px] flex items-center justify-center transition-all duration-300">
+          <svg viewBox="0 0 500 360" class="w-full h-full drop-shadow-md">
+            <!-- Grid Base -->
+            <ellipse cx="250" cy="270" rx="200" ry="60" fill="#E2E7ED" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="4 4"/>
+            
+            <!-- Lower Foundation / Ground Slab -->
+            <polygon points="120,250 250,290 380,250 250,210" fill="#CBD5E1" stroke="#94A3B8" stroke-width="1.5"/>
+            <polygon points="120,250 250,290 250,305 120,265" fill="#94A3B8" stroke="#64748B" stroke-width="1"/>
+            <polygon points="250,290 380,250 380,265 250,305" fill="#64748B" stroke="#475569" stroke-width="1"/>
+            
+            <!-- Column 1 (Left Back) -->
+            <rect x="170" y="140" width="18" height="90" fill="#94A3B8" stroke="#64748B" stroke-width="1"/>
+            <!-- Column 2 (Right Back) -->
+            <rect x="312" y="140" width="18" height="90" fill="#94A3B8" stroke="#64748B" stroke-width="1"/>
+
+            <!-- Column 3 (Left Front) -->
+            <rect x="195" y="170" width="22" height="95" fill="#CBD5E1" stroke="#64748B" stroke-width="1.2"/>
+            <rect x="217" y="170" width="7" height="95" fill="#94A3B8" stroke="#475569" stroke-width="1"/>
+
+            <!-- Column 4 (Center Front) -->
+            <rect x="245" y="180" width="22" height="95" fill="#E2E8F0" stroke="#64748B" stroke-width="1.2"/>
+            <rect x="267" y="180" width="7" height="95" fill="#94A3B8" stroke="#475569" stroke-width="1"/>
+
+            <!-- Column 5 (Right Front) -->
+            <rect x="290" y="170" width="22" height="95" fill="#CBD5E1" stroke="#64748B" stroke-width="1.2"/>
+            <rect x="312" y="170" width="7" height="95" fill="#94A3B8" stroke="#475569" stroke-width="1"/>
+
+            <!-- Upper Floor Slab -->
+            <polygon points="130,150 250,185 370,150 250,115" fill="#E2E8F0" stroke="#475569" stroke-width="1.5"/>
+            <polygon points="130,150 250,185 250,198 130,163" fill="#94A3B8" stroke="#475569" stroke-width="1"/>
+            <polygon points="250,185 370,150 370,163 250,198" fill="#64748B" stroke="#334155" stroke-width="1"/>
+
+            <!-- IFC Structural Axis lines -->
+            <line x1="250" y1="90" x2="250" y2="310" stroke="#2563EB" stroke-width="1" stroke-dasharray="3 3"/>
+            <circle cx="250" cy="150" r="3" fill="#2563EB"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- OVERLAY A: BUSY / IN-PROGRESS STATE (SetBusy = true) -->
+      <!-- Translucent, clearly indicates ongoing background process -->
+      <div id="busyOverlay" class="hidden absolute inset-0 bg-white/70 backdrop-blur-[2px] flex flex-col items-center justify-center z-20">
+        <div class="bg-white border border-winBorder rounded-md p-6 shadow-md flex flex-col items-center max-w-xs text-center">
+          <svg class="w-8 h-8 animate-spin text-winPrimary mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="12" cy="12" r="10" stroke-opacity="0.2"></circle>
+            <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"></path>
+          </svg>
+          <span id="busyMessage" class="text-sm font-semibold text-winText">Exporting IFC…</span>
+          <span class="text-xs text-winTextSec mt-1">Rhino remains responsive during operation</span>
+        </div>
+      </div>
+
+      <!-- OVERLAY B: EMPTY MODEL STATE ("No supported geometry to export.") -->
+      <div id="emptyOverlay" class="hidden absolute inset-0 bg-[#F1F3F5] flex flex-col items-center justify-center p-6 text-center z-20">
+        <div class="w-12 h-12 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center text-slate-500 mb-3">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+          </svg>
+        </div>
+        <h2 class="text-sm font-semibold text-winText">No Supported Geometry to Export</h2>
+        <p class="text-xs text-winTextSec max-w-sm mt-1 leading-relaxed">
+          The active Rhino model contains no meshes, surfaces, or supported Breps on visible exportable layers.
+        </p>
+        <span class="mt-3 text-[11px] font-mono text-slate-500 bg-slate-200 px-2 py-1 rounded">
+          Previous viewer scene cleared
+        </span>
+      </div>
+
+      <!-- OVERLAY C: VIEWER ENGINE FAILURE STATE ("Viewer failed: ...") -->
+      <div id="viewerFailOverlay" class="hidden absolute inset-0 bg-winErrorBg/40 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center z-20">
+        <div class="bg-white border border-winError/40 rounded-md p-5 shadow-lg max-w-md text-left">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-red-100 text-winError flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-sm font-semibold text-winError">Viewer failed: WebGL context creation failed</h2>
+              <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                The embedded That Open 3D viewer could not initialize hardware acceleration inside WebView2. The IFC file was exported successfully and is available below.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- 5. COMPACT FOOTER (Status, Object Counts, IFC Path) -->
+    <!-- Specs: Status message with text & icon; selectable read-only path; error text wraps without hiding preview -->
+    <footer class="bg-winSurface px-4 py-2.5 flex flex-col gap-2 flex-shrink-0 text-xs select-text">
+      
+      <!-- Top Line: Status Message (Left) + Object Counts Summary (Right) -->
+      <div class="flex flex-wrap items-center justify-between gap-y-1 gap-x-4 min-w-0">
+        
+        <!-- Status Indicator (Text + Color + Icon for WCAG accessibility) -->
+        <div id="statusContainer" class="flex items-center gap-2 min-w-0 flex-1">
+          <!-- Status Icon Badge -->
+          <span id="statusIconWrapper" class="w-4 h-4 flex items-center justify-center flex-shrink-0 text-winSuccess">
+            <!-- Default: Check Circle -->
+            <svg id="statusIcon" class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor">
+              <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm3.854-8.854a.5.5 0 0 0-.708-.708L7.5 9.043 5.354 6.896a.5.5 0 1 0-.708.708l2.5 2.5a.5.5 0 0 0 .708 0l4.5-4.5z"/>
+            </svg>
+          </span>
+
+          <!-- Status Message Text (Wraps cleanly if 2 lines, avoids covering preview) -->
+          <span id="statusText" class="font-medium text-winSuccess tracking-tight break-words">
+            Loaded
+          </span>
+        </div>
+
+        <!-- Object Summary Counts: SetExportSummary / ClearExportSummary -->
+        <div id="exportSummary" class="flex items-center gap-1.5 text-slate-700 font-mono text-[11.5px] bg-slate-100 border border-winBorder px-2 py-0.5 rounded flex-shrink-0">
+          <span class="text-slate-500">Objects:</span>
+          <span id="objCounts" class="font-semibold text-slate-800">5 exported · 0 skipped</span>
+        </div>
+      </div>
+
+      <!-- Bottom Line: IFC File Path (Selectable, Read-Only WinForms TextBox representation) -->
+      <!-- Spec: "IFC file: label followed by a selectable, read-only path field. Long paths must remain accessible without stretching the window." -->
+      <div class="flex items-center gap-2 min-w-0">
+        <label for="ifcPathField" class="text-slate-500 font-medium text-[11.5px] flex-shrink-0">IFC file:</label>
+        
+        <div class="flex-1 min-w-0 relative flex items-center">
+          <input 
+            id="ifcPathField" 
+            type="text" 
+            readonly 
+            value="C:\Users\Architect\AppData\Local\Temp\RhinoIFC_Export_Snapshot_20250228_1530.ifc"
+            title="Click to select full export path"
+            class="w-full bg-[#F8F9FA] border border-winBorder text-slate-700 text-[11.5px] font-mono rounded px-2 py-1 select-all focus:outline-none focus:border-winPrimary focus:bg-white truncate cursor-text"
+          />
+        </div>
+
+        <!-- Copy Path Utility (Convenience helper in WinForms for long temp paths) -->
+        <button 
+          onclick="copyIfcPath()"
+          title="Copy file path to clipboard" 
+          class="px-2 py-1 bg-white border border-winBorder hover:bg-slate-50 active:bg-slate-100 rounded text-slate-600 text-[11px] font-medium flex items-center gap-1 flex-shrink-0 focus:outline-none focus:border-winPrimary">
+          <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          <span id="copyBtnText" class="hidden sm:inline">Copy</span>
+        </button>
+      </div>
+
+    </footer>
+
+  </div>
+
+  <!-- BOTTOM DESIGN DOCUMENTATION & SPEC MAP (Guides C# WinForms developer) -->
+  <div class="w-full max-w-[960px] mt-4 p-4 bg-slate-800/80 border border-slate-700 rounded text-xs text-slate-300 font-segoe space-y-2">
+    <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+      <span class="font-semibold text-slate-100 flex items-center gap-1.5">
+        <svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        C# WinForms (.NET 8) Contract Mapping Guide
+      </span>
+      <span class="font-mono text-[11px] text-amber-300">Modeless Rhino Plug-in Specification</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-[11.5px] pt-1">
+      <div>
+        <span class="text-blue-300 font-mono">Integration Boundaries:</span>
+        <ul class="list-disc list-inside text-slate-400 mt-1 space-y-0.5">
+          <li><code class="text-slate-200">RefreshRequested</code>: Triggered by #btnExportRefresh click.</li>
+          <li><code class="text-slate-200">ViewerBrowser</code>: WinForms WebView2 control occupying central region.</li>
+          <li><code class="text-slate-200">SetBusy(bool)</code>: Controls button enabled state & spinner.</li>
+          <li><code class="text-slate-200">SetSourceDocument(string)</code>: Updates document title & tooltip.</li>
+        </ul>
+      </div>
+      <div>
+        <span class="text-blue-300 font-mono">Status & Path Handlers:</span>
+        <ul class="list-disc list-inside text-slate-400 mt-1 space-y-0.5">
+          <li><code class="text-slate-200">SetStatus(category, message)</code>: Neutral, Busy, Success, Warning, Error.</li>
+          <li><code class="text-slate-200">SetExportSummary(exp, skip)</code> & <code class="text-slate-200">ClearExportSummary()</code>.</li>
+          <li><code class="text-slate-200">SetExportPath(path)</code>: Populates selectable read-only TextBox.</li>
+          <li><span class="text-slate-400">Scale Support:</span> Segoe UI with system DPI scaling (125%, 150%).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT STATE ENGINE TO VERIFY ALL SPEC REQUIREMENTS -->
+  <script>
+    // State definitions according to specification
+    const UI_STATES = {
+      success: {
+        category: 'Success',
+        statusText: 'Loaded',
+        statusColor: 'text-winSuccess',
+        iconColor: 'text-winSuccess',
+        iconType: 'check',
+        summary: '5 exported · 0 skipped',
+        showSummary: true,
+        btnDisabled: false,
+        btnBusy: false,
+        path: 'C:\\Users\\Architect\\AppData\\Local\\Temp\\RhinoIFC_Export_Snapshot_20250228_1530.ifc',
+        showModel: true,
+        isStale: false,
+        overlay: null
+      },
+      partial: {
+        category: 'Warning',
+        statusText: 'Loaded with exclusions — some objects were not exported.',
+        statusColor: 'text-winWarning',
+        iconColor: 'text-winWarning',
+        iconType: 'warning',
+        summary: '4 exported · 3 skipped',
+        showSummary: true,
+        btnDisabled: false,
+        btnBusy: false,
+        path: 'C:\\Users\\Architect\\AppData\\Local\\Temp\\RhinoIFC_Export_Snapshot_20250228_1531.ifc',
+        showModel: true,
+        isStale: false,
+        overlay: null
+      },
+      empty: {
+        category: 'Neutral',
+        statusText: 'No supported geometry to export.',
+        statusColor: 'text-slate-600',
+        iconColor: 'text-slate-500',
+        iconType: 'info',
+        summary: '',
+        showSummary: false,
+        btnDisabled: false,
+        btnBusy: false,
+        path: '',
+        showModel: false,
+        isStale: false,
+        overlay: 'empty'
+      },
+      init: {
+        category: 'Busy',
+        statusText: 'Initializing viewer…',
+        statusColor: 'text-slate-600',
+        iconColor: 'text-slate-500',
+        iconType: 'spinner',
+        summary: '',
+        showSummary: false,
+        btnDisabled: true,
+        btnBusy: true,
+        path: '',
+        showModel: false,
+        isStale: false,
+        overlay: 'busy',
+        busyMsg: 'Initializing viewer…'
+      },
+      ready: {
+        category: 'Neutral',
+        statusText: 'Ready to export.',
+        statusColor: 'text-slate-600',
+        iconColor: 'text-slate-500',
+        iconType: 'info',
+        summary: '',
+        showSummary: false,
+        btnDisabled: false,
+        btnBusy: false,
+        path: '',
+        showModel: false,
+        isStale: false,
+        overlay: null
+      },
+      reading: {
+        category: 'Busy',
+        statusText: 'Reading Rhino model…',
+        statusColor: 'text-slate-600',
+        iconColor: 'text-slate-500',
+        iconType: 'spinner',
+        summary: '',
+        showSummary: false,
+        btnDisabled: true,
+        btnBusy: true,
+        path: '',
+        showModel: true,
+        isStale: false,
+        overlay: 'busy',
+        busyMsg: 'Reading Rhino model…'
+      },
+      exporting: {
+        category: 'Busy',
+        statusText: 'Exporting IFC…',
+        statusColor: 'text-slate-600',
+        iconColor: 'text-slate-500',
+        iconType: 'spinner',
+        summary: '',
+        showSummary: false,
+        btnDisabled: true,
+        btnBusy: true,
+        path: '',
+        showModel: true,
+        isStale: false,
+        overlay: 'busy',
+        busyMsg: 'Exporting IFC…'
+      },
+      loading: {
+        category: 'Busy',
+        statusText: 'Loading IFC preview…',
+        statusColor: 'text-slate-600',
+        iconColor: 'text-slate-500',
+        iconType: 'spinner',
+        summary: '',
+        showSummary: false,
+        btnDisabled: true,
+        btnBusy: true,
+        path: 'C:\\Users\\Architect\\AppData\\Local\\Temp\\RhinoIFC_Export_Snapshot_20250228_1532.ifc',
+        showModel: true,
+        isStale: false,
+        overlay: 'busy',
+        busyMsg: 'Loading IFC preview…'
+      },
+      export_fail: {
+        category: 'Error',
+        statusText: 'Export failed: Rhino mesh tessellation error on Brep GUID {8a2f1b4c-9d44}. Refresh to retry.',
+        statusColor: 'text-winError',
+        iconColor: 'text-winError',
+        iconType: 'error',
+        summary: '',
+        showSummary: false,
+        btnDisabled: false,
+        btnBusy: false,
+        path: 'C:\\Users\\Architect\\AppData\\Local\\Temp\\RhinoIFC_Export_Snapshot_20250228_1530.ifc',
+        showModel: true,
+        isStale: true,
+        overlay: null
+      },
+      viewer_fail: {
+        category: 'Error',
+        statusText: 'Viewer failed: WebGL context creation failed. See error report.',
+        statusColor: 'text-winError',
+        iconColor: 'text-winError',
+        iconType: 'error',
+        summary: '5 exported · 0 skipped',
+        showSummary: true,
+        btnDisabled: false,
+        btnBusy: false,
+        path: 'C:\\Users\\Architect\\AppData\\Local\\Temp\\RhinoIFC_Export_Snapshot_20250228_1533.ifc',
+        showModel: false,
+        isStale: false,
+        overlay: 'viewer_fail'
+      }
+    };
+
+    function setPluginState(stateKey) {
+      const state = UI_STATES[stateKey] || UI_STATES.success;
+
+      // 1. Update Button
+      const btn = document.getElementById('btnExportRefresh');
+      const btnSpinner = document.getElementById('btnSpinner');
+      btn.disabled = state.btnDisabled;
+      if (state.btnBusy) {
+        btnSpinner.classList.remove('hidden');
+      } else {
+        btnSpinner.classList.add('hidden');
+      }
+
+      // 2. Update Status Text & Classes
+      const statusText = document.getElementById('statusText');
+      statusText.innerText = state.statusText;
+      statusText.className = `font-medium tracking-tight break-words ${state.statusColor}`;
+
+      // 3. Update Status Icon
+      const iconWrapper = document.getElementById('statusIconWrapper');
+      iconWrapper.className = `w-4 h-4 flex items-center justify-center flex-shrink-0 ${state.iconColor}`;
+      
+      let iconSvg = '';
+      if (state.iconType === 'check') {
+        iconSvg = `<svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm3.854-8.854a.5.5 0 0 0-.708-.708L7.5 9.043 5.354 6.896a.5.5 0 1 0-.708.708l2.5 2.5a.5.5 0 0 0 .708 0l4.5-4.5z"/></svg>`;
+      } else if (state.iconType === 'warning') {
+        iconSvg = `<svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor"><path d="M7.938 2.016a.13.13 0 0 1 .125 0l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.144.084H1.222a.163.163 0 0 1-.144-.084.222.222 0 0 1 .002-.183L7.938 2.016zM8 5a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 5zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>`;
+      } else if (state.iconType === 'error') {
+        iconSvg = `<svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zM4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>`;
+      } else if (state.iconType === 'spinner') {
+        iconSvg = `<svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"></path></svg>`;
+      } else {
+        iconSvg = `<svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="8" cy="5.5" r="1"/><rect x="7.2" y="7.5" width="1.6" height="4.5" rx="0.5"/></svg>`;
+      }
+      iconWrapper.innerHTML = iconSvg;
+
+      // 4. Update Summary Counts
+      const exportSummary = document.getElementById('exportSummary');
+      const objCounts = document.getElementById('objCounts');
+      if (state.showSummary) {
+        exportSummary.classList.remove('hidden');
+        objCounts.innerText = state.summary;
+      } else {
+        exportSummary.classList.add('hidden');
+      }
+
+      // 5. Update Path Field
+      const pathField = document.getElementById('ifcPathField');
+      pathField.value = state.path || '(No export file)';
+
+      // 6. Update Stale Badge
+      const staleBadge = document.getElementById('staleBadge');
+      if (state.isStale) {
+        staleBadge.classList.remove('hidden');
+      } else {
+        staleBadge.classList.add('hidden');
+      }
+
+      // 7. Overlays & Illustrative Model
+      const busyOverlay = document.getElementById('busyOverlay');
+      const emptyOverlay = document.getElementById('emptyOverlay');
+      const viewerFailOverlay = document.getElementById('viewerFailOverlay');
+      const illustrativeModel = document.getElementById('illustrativeModel');
+
+      busyOverlay.classList.add('hidden');
+      emptyOverlay.classList.add('hidden');
+      viewerFailOverlay.classList.add('hidden');
+
+      if (state.overlay === 'busy') {
+        busyOverlay.classList.remove('hidden');
+        document.getElementById('busyMessage').innerText = state.busyMsg || 'Busy...';
+      } else if (state.overlay === 'empty') {
+        emptyOverlay.classList.remove('hidden');
+      } else if (state.overlay === 'viewer_fail') {
+        viewerFailOverlay.classList.remove('hidden');
+      }
+
+      // Visibility of illustrative geometry
+      illustrativeModel.style.opacity = state.showModel ? '1' : '0';
+    }
+
+    // Triggered by "Export & Refresh"
+    function triggerUserExport() {
+      const selector = document.getElementById('stateSelector');
+      selector.value = 'exporting';
+      setPluginState('exporting');
+      
+      // Step sequentially through C# pipeline simulation without fake completion timer in production
+      setTimeout(() => {
+        selector.value = 'loading';
+        setPluginState('loading');
+        setTimeout(() => {
+          selector.value = 'success';
+          setPluginState('success');
+        }, 1200);
+      }, 1000);
+    }
+
+    function copyIfcPath() {
+      const pathInput = document.getElementById('ifcPathField');
+      if (!pathInput.value || pathInput.value.startsWith('(')) return;
+      navigator.clipboard.writeText(pathInput.value);
+      const copyText = document.getElementById('copyBtnText');
+      copyText.innerText = 'Copied!';
+      setTimeout(() => { copyText.innerText = 'Copy'; }, 1800);
+    }
+  </script>
+</body>
+</html>

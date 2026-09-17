@@ -1,0 +1,1 @@
+https://raw.githubusercontent.com/microsoft/ManagedEsent/f256bdc1c8e0e59bdb668eb144190cd2a3cb2a24/LICENSE.md

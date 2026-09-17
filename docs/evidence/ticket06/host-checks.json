@@ -1,0 +1,60 @@
+﻿{
+  "finished": "2026-09-17 02:55:19", 
+  "overall": "PASS", 
+  "assembly_mvid": "74626297-ff51-4688-8d21-e197f67ee05e", 
+  "assertions": [
+    {
+      "pass": true, 
+      "description": "1. Baseline load: 4 exported, 1 skipped, scene available", 
+      "detail": "Objects: 4 exported [U+00B7] 1 skipped"
+    }, 
+    {
+      "pass": true, 
+      "description": "2. Injected invalid supported mesh into active document", 
+      "detail": "ea54680e-ad6b-4019-a240-f35b05481259"
+    }, 
+    {
+      "pass": true, 
+      "description": "3. Invalid mesh export failed with object name, ID, and reason", 
+      "detail": "Export failed: Supported object 'Bad_DegenerateMesh' (ea54680e-ad6b-4019-a240-f35b05481259) conversion failed: Supported object 'Bad_DegenerateMesh' (ea54680e-ad6b-4019-a240-f35b05481259) triangle 0 has zero or degenerate area."
+    }, 
+    {
+      "pass": true, 
+      "description": "4. Previous valid scene preserved as Stale with matching old path and counts", 
+      "detail": "sceneAvailable=True, stale=True, path=C:\\Users\\Hazem\\AppData\\Local\\OptiDesign\\RhinoIfcViewer\\exports\\model-e20a5c2149974b2aa6db18e118dde526.ifc"
+    }, 
+    {
+      "pass": true, 
+      "description": "5. Recovery from invalid mesh: clean load, stale dismissed, new snapshot path", 
+      "detail": "new path: C:\\Users\\Hazem\\AppData\\Local\\OptiDesign\\RhinoIfcViewer\\exports\\model-44644160d9a549c8b627bb01b8106ba8.ifc"
+    }, 
+    {
+      "pass": true, 
+      "description": "6. Staging failure identifies cause and preserves prior scene as stale", 
+      "detail": "Export failed: Viewer file staging failed: Could not find a part of the path 'C:\\Users\\Hazem\\AppData\\Local\\OptiDesign\\RhinoIfcViewer\\sessions\\e7861c3455264641890a033234a14731\\site\\models\\model-d6d5621fd07043b0a206adbf540ddd6e.ifc'."
+    }, 
+    {
+      "pass": true, 
+      "description": "7. Recovery from staging failure restores clean loaded state", 
+      "detail": "C:\\Users\\Hazem\\AppData\\Local\\OptiDesign\\RhinoIfcViewer\\exports\\model-aa698518f6f240ba8c4c1fff0d7caf91.ifc"
+    }, 
+    {
+      "pass": true, 
+      "description": "8. Unknown units with supported geometry aborts export with units error", 
+      "detail": "Export failed: Document 'unitless-1789602906.3dm' has unknown or unsupported model units (None). Supported geometry cannot be scaled to metres."
+    }, 
+    {
+      "pass": true, 
+      "description": "9. No-scene recovery path: no scene falsely retained, stale is false, error shown", 
+      "detail": "sceneAvailable=False, stale=False"
+    }, 
+    {
+      "pass": true, 
+      "description": "10. Document switch permanently clears prior displayed state", 
+      "detail": "scene cleared on switch"
+    }
+  ], 
+  "started": "2026-09-17 02:55:06", 
+  "assembly_path": "D:\\Rhino-IFC-Viewer\\src\\RhinoIfcViewer\\bin\\Release\\net8.0-windows\\RhinoIfcViewer.rhp", 
+  "assembly_sha256": "1b833024a079da621b3897a177840e2e9026d72523e66dbece73ad5f758f4acf"
+}

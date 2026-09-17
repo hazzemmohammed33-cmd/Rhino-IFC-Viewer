@@ -1,0 +1,50 @@
+Rhino IFC Viewer — Ticket 01 native dependency notices
+
+This source workspace contains unmodified third-party package binaries in its
+generated native build output. Retain this file and licenses/ with any copy of
+that output. Exact package versions, source links, redistribution disposition
+and audit evidence are in docs/DEPENDENCIES.md and the native packages.lock.json.
+
+Microsoft.Web.WebView2 1.0.4191.47
+Copyright Microsoft Corporation. All rights reserved.
+See licenses/Microsoft.Web.WebView2-1.0.4191.47/LICENSE.txt and NOTICE.txt.
+The installed WebView2 Runtime has its own terms and is not included here.
+
+Xbim.Essentials and Xbim.Common, Xbim.Ifc, Xbim.Ifc2x3, Xbim.Ifc4,
+Xbim.Ifc4x3, Xbim.IO.Esent, Xbim.IO.MemoryModel 6.1.605
+Copyright XBIM Ltd; see each retained original package metadata.
+Common Development and Distribution License (CDDL-1.0).
+Unmodified component source is available at:
+https://github.com/xBimTeam/XbimEssentials/tree/e3c877712aeff39813219b9dd13383c266d07055
+Archive:
+https://github.com/xBimTeam/XbimEssentials/archive/e3c877712aeff39813219b9dd13383c266d07055.zip
+License text and source provenance: licenses/Xbim.*-6.1.605/.
+
+Microsoft.Database.ManagedEsent 2.0.3
+Copyright Microsoft Corporation. MIT License.
+See licenses/Microsoft.Database.ManagedEsent-2.0.3/.
+Source project: https://github.com/microsoft/ManagedEsent
+The package does not identify a source commit; retained SOURCE.txt identifies
+the upstream license-file revision only.
+
+Microsoft.Extensions.DependencyInjection 8.0.1
+Microsoft.Extensions.DependencyInjection.Abstractions 10.0.9
+Microsoft.Extensions.Logging.Abstractions 8.0.3
+Microsoft.Extensions.Options 10.0.9
+Microsoft.Extensions.Primitives 10.0.9
+Microsoft.Win32.SystemEvents 7.0.0 (not copied to native output)
+System.Drawing.Common 7.0.0 (not copied to native output)
+MIT License. Copyright Microsoft Corporation and/or .NET Foundation and
+Contributors as specified in the retained license and package files.
+See each version-named licenses/ directory, including THIRD-PARTY-NOTICES.TXT
+where supplied. Repository and source commit metadata are retained there.
+
+RhinoCommon 8.29.26063.11001
+Copyright (c) 1997-2025 Robert McNeel and Associates.
+Compile-time host SDK; RhinoCommon and Eto binaries are not distributed here.
+Original package metadata and accompanying Eto-LICENSE.txt are retained in
+licenses/RhinoCommon-8.29.26063.11001/ for provenance.
+Rhino and Windows are separate installed prerequisites, not bundled software.
+
+This is the native Ticket 01 inventory. Later web/test/package tickets must
+extend the inventory and notices to match the actual final distribution.

@@ -1,0 +1,7 @@
+{
+  "formHandle": 115146946, 
+  "ownerHandle": 68342, 
+  "result": "PASS", 
+  "rhinoHandle": 68342, 
+  "check": "native owner is Rhino main window"
+}

@@ -1,0 +1,141 @@
+{
+  "runtime": "8.0.25", 
+  "host": "8.29.26063.11001", 
+  "checks": [
+    {
+      "detail": "ce655aca-285b-435e-b72a-0d226ca448c6", 
+      "result": "PASS", 
+      "check": "scratch box created"
+    }, 
+    {
+      "detail": "OptiIfcViewer in live Rhino", 
+      "result": "PASS", 
+      "check": "command returned success"
+    }, 
+    {
+      "detail": "1", 
+      "result": "PASS", 
+      "check": "one viewer"
+    }, 
+    {
+      "detail": "OptiIfcViewer in live Rhino", 
+      "result": "PASS", 
+      "check": "command returned success"
+    }, 
+    {
+      "detail": "723418", 
+      "result": "PASS", 
+      "check": "repeat reuses same form"
+    }, 
+    {
+      "detail": "One browser instance on repeated activation", 
+      "result": "PASS", 
+      "check": "repeat reuses same browser"
+    }, 
+    {
+      "detail": "{'objects': [('ce655aca-285b-435e-b72a-0d226ca448c6', 3619543197L, 'Ticket01_Only_Test_Box', 0, 'Normal', 2)], 'modified': True, 'serial': 268435457}", 
+      "result": "PASS", 
+      "check": "source preserved on activation"
+    }, 
+    {
+      "detail": "OptiIfcViewer in live Rhino", 
+      "result": "PASS", 
+      "check": "command returned success"
+    }, 
+    {
+      "detail": "Normal", 
+      "result": "PASS", 
+      "check": "command restores minimized form"
+    }, 
+    {
+      "detail": "Ticket 01 must not initialize or render a model", 
+      "result": "PASS", 
+      "check": "no browser initialized"
+    }, 
+    {
+      "detail": "Form.Modal=False; ShowInTaskbar=False", 
+      "result": "PASS", 
+      "check": "modeless native shell"
+    }, 
+    {
+      "detail": "{'objects': [('ce655aca-285b-435e-b72a-0d226ca448c6', 3619543197L, 'Ticket01_Only_Test_Box', 0, 'Normal', 2)], 'modified': True, 'serial': 268435457}", 
+      "result": "PASS", 
+      "check": "source preserved on restore"
+    }, 
+    {
+      "detail": "Moved test box +5 document units in X with preview visible", 
+      "result": "PASS", 
+      "check": "Rhino editing while preview open"
+    }, 
+    {
+      "detail": "X bounds 5..15", 
+      "result": "PASS", 
+      "check": "move applied"
+    }, 
+    {
+      "detail": "Old form/browser disposed and removed from OpenForms", 
+      "result": "PASS", 
+      "check": "close disposes form and browser"
+    }, 
+    {
+      "detail": "OptiIfcViewer in live Rhino", 
+      "result": "PASS", 
+      "check": "command returned success"
+    }, 
+    {
+      "detail": "788954", 
+      "result": "PASS", 
+      "check": "reopen creates one fresh form"
+    }, 
+    {
+      "detail": "{'objects': [('ce655aca-285b-435e-b72a-0d226ca448c6', 167976856, 'Ticket01_Only_Test_Box', 0, 'Normal', 2)], 'modified': True, 'serial': 268435457}", 
+      "result": "PASS", 
+      "check": "source preserved across close/reopen"
+    }, 
+    {
+      "detail": "OptiIfcViewer in live Rhino", 
+      "result": "PASS", 
+      "check": "command returned success"
+    }, 
+    {
+      "detail": "One new shell; source unchanged", 
+      "result": "PASS", 
+      "check": "close/reopen cycle 1"
+    }, 
+    {
+      "detail": "OptiIfcViewer in live Rhino", 
+      "result": "PASS", 
+      "check": "command returned success"
+    }, 
+    {
+      "detail": "One new shell; source unchanged", 
+      "result": "PASS", 
+      "check": "close/reopen cycle 2"
+    }, 
+    {
+      "detail": "OptiIfcViewer in live Rhino", 
+      "result": "PASS", 
+      "check": "command returned success"
+    }, 
+    {
+      "detail": "One new shell; source unchanged", 
+      "result": "PASS", 
+      "check": "close/reopen cycle 3"
+    }, 
+    {
+      "detail": "D:\\Rhino-IFC-Viewer\\.scratch\\ticket01\\host-check-box.3dm", 
+      "result": "PASS", 
+      "check": "save authored scratch fixture"
+    }, 
+    {
+      "detail": "OptiIfcViewer in live Rhino", 
+      "result": "PASS", 
+      "check": "command returned success"
+    }, 
+    {
+      "detail": "{'objects': [('ce655aca-285b-435e-b72a-0d226ca448c6', 167976856, 'Ticket01_Only_Test_Box', 0, 'Normal', 2)], 'modified': False, 'serial': 268435457}", 
+      "result": "PASS", 
+      "check": "clean document remains clean"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+**/bin/
+**/obj/
+.vs/
+viewer/node_modules/
+viewer/public/vendor/
+viewer/dist/
+/dist/
+samples/viewer-smoke.ifc
+*.user
+*.suo
+
+# Internal working material; retained locally, never published.
+/.scratch/
+/.vscode/
+/RHINO_IFC_VIEWER_MASTER_PLAN.md

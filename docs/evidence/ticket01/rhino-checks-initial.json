@@ -1,0 +1,16 @@
+{
+  "runtime": "8.0.25", 
+  "host": "8.29.26063.11001", 
+  "checks": [
+    {
+      "detail": "ce655aca-285b-435e-b72a-0d226ca448c6", 
+      "result": "PASS", 
+      "check": "scratch box created"
+    }, 
+    {
+      "detail": "Traceback (most recent call last):\n  File \"D:\\Rhino-IFC-Viewer\\.scratch\\ticket01\\verify-rhino.py\", line 53, in <module>\n    before = state()\n  File \"D:\\Rhino-IFC-Viewer\\.scratch\\ticket01\\verify-rhino.py\", line 31, in state\n    return {\nAttributeError: 'ObjectAttributes' object has no attribute 'DataCRC'\n", 
+      "result": "FAIL", 
+      "check": "test run"
+    }
+  ]
+}

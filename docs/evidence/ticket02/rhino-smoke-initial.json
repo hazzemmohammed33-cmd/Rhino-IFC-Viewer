@@ -1,0 +1,6 @@
+{
+  "taskFaulted": false, 
+  "status": "Viewer failed: Method not found: 'Void Microsoft.Web.WebView2.Core.CoreWebView2Profile.add_Deleted(System.EventHandler`1<System.Object>)'.", 
+  "result": "FAIL", 
+  "url": "None"
+}

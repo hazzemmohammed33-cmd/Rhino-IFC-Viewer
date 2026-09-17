@@ -1,0 +1,1 @@
+https://raw.githubusercontent.com/dotnet/dotnet/901ca941248413c79832d2fdbd709da0c4386353/LICENSE.TXT

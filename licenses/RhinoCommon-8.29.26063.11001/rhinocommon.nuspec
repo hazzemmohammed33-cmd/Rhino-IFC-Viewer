@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>RhinoCommon</id>
+    <version>8.29.26063.11001</version>
+    <title>RhinoCommon SDK for Rhino WIP for Windows</title>
+    <authors>Robert McNeel and Associates</authors>
+    <owners>mcneel</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <icon>rhinocommon.png</icon>
+    <projectUrl>http://developer.rhino3d.com/guides/rhinocommon/</projectUrl>
+    <description>RhinoCommon is the cross-platform .NET plugin SDK for Rhino</description>
+    <copyright>Copyright (c) 1997-2025 Robert McNeel and Associates</copyright>
+    <tags>rhino3d</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework4.8" />
+      <group targetFramework=".NETFramework7.0">
+        <dependency id="System.Drawing.Common" version="7.0.0" />
+      </group>
+    </dependencies>
+    <frameworkReferences>
+      <group targetFramework=".NETFramework4.8" />
+      <group targetFramework=".NETFramework7.0" />
+    </frameworkReferences>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.Drawing" targetFramework=".NETFramework4.8" />
+    </frameworkAssemblies>
+  </metadata>
+</package>

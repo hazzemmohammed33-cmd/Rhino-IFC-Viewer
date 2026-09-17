@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../src/RhinoIfcViewer/ObjectConversion.cs" Link="ObjectConversion.cs" />
+    <Compile Include="../../src/RhinoIfcViewer/ViewerOperation.cs" Link="ViewerOperation.cs" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5"
+                      PrivateAssets="all" />
+    <PackageReference Include="Xbim.Essentials" Version="6.1.605" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../src/RhinoIfcViewer/ModelSnapshot.cs" Link="ModelSnapshot.cs" />
+    <Compile Include="../../src/RhinoIfcViewer/IfcExporter.cs" Link="IfcExporter.cs" />
+    <Compile Include="../../src/RhinoIfcViewer/ViewerSession.cs" Link="ViewerSession.cs" />
+  </ItemGroup>
+</Project>

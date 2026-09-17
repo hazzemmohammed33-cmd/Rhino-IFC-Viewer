@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <PlatformTarget>x64</PlatformTarget>
+    <TargetExt>.rhp</TargetExt>
+    <AssemblyName>RhinoIfcViewer</AssemblyName>
+    <RootNamespace>RhinoIfcViewer</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="RhinoCommon" Version="8.29.26063.11001"
+                      ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4191.47"
+                      GeneratePathProperty="true" />
+    <PackageReference Include="Xbim.Essentials" Version="6.1.605" />
+  </ItemGroup>
+  <!-- The pinned SDK imports both UI wrappers. This WinForms host must not
+       resolve the unused WPF wrapper and its conflicting WindowsBase reference. -->
+  <Target Name="RemoveUnusedWebView2WpfReference" BeforeTargets="ResolveAssemblyReferences">
+    <ItemGroup>
+      <Reference Remove="@(Reference)"
+                 Condition="'%(Reference.Filename)' == 'Microsoft.Web.WebView2.Wpf'" />
+    </ItemGroup>
+  </Target>
+  <Target Name="StageX64WebView2Loader" AfterTargets="Build">
+    <Error Condition="!Exists('$(PkgMicrosoft_Web_WebView2)\runtimes\win-x64\native\WebView2Loader.dll')"
+           Text="The pinned WebView2 x64 native loader is missing from the restored package." />
+    <Copy SourceFiles="$(PkgMicrosoft_Web_WebView2)\runtimes\win-x64\native\WebView2Loader.dll"
+          DestinationFiles="$(TargetDir)WebView2Loader.dll"
+          SkipUnchangedFiles="true" />
+  </Target>
+</Project>

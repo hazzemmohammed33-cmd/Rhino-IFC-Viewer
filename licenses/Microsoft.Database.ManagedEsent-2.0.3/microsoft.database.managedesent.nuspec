@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>Microsoft.Database.ManagedEsent</id>
+    <version>2.0.3</version>
+    <authors>Microsoft</authors>
+    <owners>Microsoft, nugetese, mthorp</owners>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <projectUrl>https://github.com/microsoft/ManagedEsent</projectUrl>
+    <description>ManagedEsent provides managed access to ESENT, the embeddable database engine native to Windows. ManagedEsent uses the esent.dll that is part of Microsoft Windows so there are no extra unmanaged binaries to download and install.</description>
+    <releaseNotes>Release 2.0.3 from 08/13/2021.</releaseNotes>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <tags>ManagedEsent NoSql ISAM Database Storage DatabaseEngine</tags>
+    <dependencies>
+      <group targetFramework=".NETStandard2.0" />
+    </dependencies>
+  </metadata>
+</package>

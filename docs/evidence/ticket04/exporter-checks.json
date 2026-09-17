@@ -1,0 +1,27 @@
+{
+  "overall": "PASS", 
+  "ticket": "Ticket 04", 
+  "timestamp": "2026-09-16 19:42:05", 
+  "assertions": [
+    {
+      "detail": "4 objects", 
+      "description": "Read snapshot produced 4 objects", 
+      "pass": true
+    }, 
+    {
+      "detail": "Faulted: False", 
+      "description": "Export and render task completed without fault", 
+      "pass": true
+    }, 
+    {
+      "detail": "Temporary IFC loaded - not a Rhino export.", 
+      "description": "Embedded viewer loaded exported IFC successfully", 
+      "pass": true
+    }, 
+    {
+      "detail": "4751 ms", 
+      "description": "End-to-end export and preview completed in reasonable time", 
+      "pass": true
+    }
+  ]
+}

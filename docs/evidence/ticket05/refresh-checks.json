@@ -1,0 +1,16 @@
+{
+  "ticket": "Ticket 05", 
+  "overall": "FAIL", 
+  "assertions": [
+    {
+      "detail": "Elapsed: 4536 ms", 
+      "pass": true, 
+      "description": "Initial auto-refresh completed"
+    }, 
+    {
+      "detail": "Loaded with exclusions", 
+      "pass": true, 
+      "description": "Status shows loaded with exclusions"
+    }, 
+    {
+      "detail": 

@@ -1,0 +1,24 @@
+﻿Project 'RhinoIfcViewer' has the following package references
+   [net8.0-windows]: 
+   Top-level Package             Requested          Resolved        
+   > Microsoft.Web.WebView2      1.0.4191.47        1.0.4191.47     
+   > RhinoCommon                 8.29.26063.11001   8.29.26063.11001
+   > Xbim.Essentials             6.1.605            6.1.605         
+
+   Transitive Package                                           Resolved
+   > Microsoft.Database.ManagedEsent                            2.0.3   
+   > Microsoft.Extensions.DependencyInjection                   8.0.1   
+   > Microsoft.Extensions.DependencyInjection.Abstractions      10.0.9  
+   > Microsoft.Extensions.Logging.Abstractions                  8.0.3   
+   > Microsoft.Extensions.Options                               10.0.9  
+   > Microsoft.Extensions.Primitives                            10.0.9  
+   > Microsoft.Win32.SystemEvents                               7.0.0   
+   > System.Drawing.Common                                      7.0.0   
+   > Xbim.Common                                                6.1.605 
+   > Xbim.Ifc                                                   6.1.605 
+   > Xbim.Ifc2x3                                                6.1.605 
+   > Xbim.Ifc4                                                  6.1.605 
+   > Xbim.Ifc4x3                                                6.1.605 
+   > Xbim.IO.Esent                                              6.1.605 
+   > Xbim.IO.MemoryModel                                        6.1.605 
+
